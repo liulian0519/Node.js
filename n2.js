@@ -8,9 +8,12 @@ var server=http.createServer(function(req,res){
 	//得到用户路径
 	var pathname=l1.parse(req.url).pathname;
 	//默认首页
-	if(pathname=="/"){
-		pathname="index.html";
-	}
+//	if(pathname=="/"){
+//		pathname="index.html";
+//	}
+if(pathname.indexOf(".")==-1){
+	pathname += "index.html";
+}
 	//拓展名
 	var extname = path.extname(pathname);
 	//读取文件
