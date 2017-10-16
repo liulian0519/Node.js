@@ -1,4 +1,4 @@
-/*静态资源文件管理*/
+﻿/*静态资源文件管理*/
 
 var http = require("http");
 var l1 = require("url");
