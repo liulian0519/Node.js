@@ -23,9 +23,11 @@ var server=http.createServer(function(req,res){
 			});
 			return;
 		};
-		var mime = getMime(extname);
-		res.writeHead(200,{"content-type":mime});
-		res.end(data);
+		getMime(extname,function(mime){
+			res.writeHead(200,{"content-type":mime});
+			res.end(data);
+		});
+	
 	});
 	
 	
@@ -35,14 +37,15 @@ var server=http.createServer(function(req,res){
 server.listen(3000,"127.0.0.1");
 
 
-function getMime(extname){
-	switch(extname){
-		//不完整
-		case ".html" : return "text/html";
-			break;
-		case ".jpg" : return "image/jpg";
-			break;
-		case ".css" : return "text/css";
-			break;
-	}
+function getMime(extname,callback){
+	fs.readFile("./mime.json",function(err,data){
+		if(err){
+			throw Error("找不到mime.json");
+			return;
+		}
+		//转成json
+		var mimeJson = JSON.parse(data);
+		var mime = mimeJson[extname] || "text/plain";
+		callback(mime);
+	})
 }
