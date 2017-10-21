@@ -1,5 +1,5 @@
 ﻿/*静态资源文件管理*/
-
+/*原生node.js管理*/
 var http = require("http");
 var l1 = require("url");
 var fs = require("fs");
