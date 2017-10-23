@@ -25,3 +25,33 @@ exports.getAllAlbums =function(callback){
 
   });
 }
+//通过文件名得到照片
+exports.getAllImagesByAlbumName=function(albumName,callback){
+    fs.readdir("./uploads/" + albumName,function(err,files){
+        if(err){
+            callback("没有找到uploads文件加",null);
+            return;
+        }
+        var allImages = [];
+
+        (function iterator(i){
+            if(i==files.length){
+                console.log(allImages);
+                callback(null,allImages);
+                return;
+            }
+            fs.stat("./uploads/" + albumName +"/"+ files[i],function(err,stats){
+                if(err){
+                    callback("找不到文件"+files[i],null);
+                    return;
+                }
+                if(stats.isFile()){
+                    allImages.push(files[i]);
+                }
+                iterator(i+1);
+            });
+        })(0);
+
+    });
+
+}

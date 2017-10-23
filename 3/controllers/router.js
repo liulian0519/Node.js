@@ -11,6 +11,21 @@ exports.showIndex = function(req,res){
         });
     })
 }
+//相册页
 exports.showphoto = function(req,res){
-   res.send("相册"+req.params.photo);
+    //遍历相册中的所有图片
+    var albumName = req.params.photoname;
+    // console.log(albumName);
+   // res.send("相册"+req.params.photo);
+    file.getAllImagesByAlbumName(albumName,function(err,imagesArray){
+       if(err){
+           res.send(err);
+           return;
+       }
+        res.render("album",{
+            "albumname" : albumName,
+            "images":   imagesArray
+        });
+    })
+
 }

@@ -6,8 +6,14 @@ var router = require("./controllers")
 app.set("view engine","ejs");
 
 app.use(express.static("./public"));
+app.use(express.static("./uploads"));
 //首页
 app.get("/",router.showIndex);
 app.get("/:photoname",router.showphoto);
+app.use(function(req,res){
 
+    res.render("err",{
+        "baseurl":req.pathname
+    });
+})
 app.listen(3000);
