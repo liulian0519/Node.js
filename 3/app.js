@@ -8,8 +8,13 @@ app.set("view engine","ejs");
 app.use(express.static("./public"));
 app.use(express.static("./uploads"));
 //首页
-app.get("/",router.showIndex);
+app.get("/",router.showIndex); //路由
 app.get("/:photoname",router.showphoto);
+app.get("/up",router.showup); //路由
+
+app.post("/up",router.dopost);
+
+
 app.use(function(req,res){
 
     res.render("err",{
