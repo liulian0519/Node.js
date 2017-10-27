@@ -1,3 +1,6 @@
 下载后请运行
 ：
 npm install --save mongodb
+npm install --save express
+npm install --save formidable
+npm install --save ejs
