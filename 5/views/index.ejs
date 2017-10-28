@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>相册</title>
+    <style>
+        #chenggong,#shibai{
+            display: none;
+        }
+    </style>
+    <script type="text/html" id="arttep">
+        {{each res as value}}
+        <div class="list-group">
+            <a href="#" class="list-group-item active">
+                <h4 class="list-group-item-heading">{{value.xingming}}</h4>
+                <p class="list-group-item-text">{{value.liuyan}}</p>
+            </a>
+        </div>
+            <!--<p>{{value.xingming}}</p>-->
+            <!--<p>{{value.liuyan}}</p>-->
+        {{/each}}
+    </script>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -38,17 +55,47 @@
                 <button type="button" class="btn btn-default" id="tijiao">提交</button>
             </div>
         </div>
+        <div class="alert alert-success" role="alert" id="chenggong">提交成功</div>
+
+        <div class="alert alert-warning" role="alert" id="shibai">提交失败</div>
     </form>
+
+    <div class="hh" id="tet">
+        <!--tianchong-->
+    </div>
 </div>
 <script src="js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="js/template.js" ></script>
 <script src="js/bootstrap.min.js"></script>
 <script>
+
+        $.get("/du", function(e){
+//            var json = JSON.parse(result);
+            console.log(e.result.length);
+            var array = new Array();
+            for(var i=0;i<e.result.length;i++){
+                array[i]=e.result[i];
+            }
+            var c= {res:array};
+            console.log(c);
+//            console.log(e.result);
+            var html = template('arttep',c);
+            $("#tet").html(html);
+        });
+
     $("#tijiao").click(function(){
+        $("#chenggong").hide();
+        $("#shibai").hide();
         $.post("/tijiao",{
             "xingming":$("#xingming").val(),
             "liuyan":$("#liuyan").val()
         },function(result){
+           if(result.result==-1){
+               $("#shibai").fadeIn()
 
+           }else if(result.result==1){
+               $("#chenggong").fadeIn();
+           }
         });
     });
 

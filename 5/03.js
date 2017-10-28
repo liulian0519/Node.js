@@ -10,11 +10,27 @@ app.use(express.static("./public"));
 app.get("/",function(req,res,next){
     res.render("index");
 });
+app.get("/du",function(req,res,next){
+    db.find("liuyanben",{},function(err,result){
+        res.json({"result":result});
+    });
+});
 //处理留言
 app.post("/tijiao",function(req,res,next){
     var form = new formidable.IncomingForm();
     form.parse(req,function(err,fields){
-        console.log("收到了"+ fields.xingming + "  "+ fields.liuyan);
-    })
-})
+        //写入数据库
+        db.insertOne("liuyanben",{
+            "xingming":fields.xingming,
+            "liuyan":fields.liuyan
+        },function(err,result){
+            if(err){
+                res.json({"result":-1});   //这是给Ajax看的
+                return;
+            }
+            res.json({"result":1});
+        });
+
+    });
+});
 app.listen(3000);
