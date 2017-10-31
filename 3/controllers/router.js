@@ -14,7 +14,9 @@ exports.showIndex = function(req,res,next){
             return;
         }
         res.render("index",{
+
             "albums":allAlbums
+
         });
     })
 }
@@ -62,8 +64,8 @@ exports.dopost=function(req,res){
         }
         //判断尺寸大小
         var size = files.tupian.size;
-        if(size>2048){
-            res.send("图片不能大于2M");
+        if(size>10240){
+            res.send("图片不能大于10M");
             fs.unlink(files.tupian.path)
             return;
         }
