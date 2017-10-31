@@ -2,3 +2,5 @@
 npm install --save express
 npm install --save formidable
 npm install --save ejs
+
+ä¯ÀÀÆ÷ÖĞ·ÃÎÊ127.0.0.1£º3000
