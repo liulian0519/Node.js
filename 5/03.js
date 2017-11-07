@@ -12,7 +12,10 @@ app.get("/",function(req,res,next){
 });
 //读取所有留言
 app.get("/du",function(req,res,next){
-    db.find("liuyanben",{},{"sort":{"shijian":-1}},function(err,result){
+    // var pagesize = 4;
+    //可以接受一个参数
+    var page = parseInt(req.query.page);
+    db.find("liuyanben",{},{"sort":{"shijian":-1},"pageamount":4,"page":page},function(err,result){
         res.json({"result":result});
     });
 });

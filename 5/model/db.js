@@ -93,3 +93,4 @@ exports.updateMany=function(collectionNmae,json1,json2,callback){
 
     })
 }
+//得到总数
