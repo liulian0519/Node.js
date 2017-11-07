@@ -38,9 +38,12 @@ exports.find=function(collectionName,json,C,D){
     }else if(arguments.length ==4){
         var callback = D;
         var args = C;
-        var skipnumber = args.pageamount * args.page;
-        var limit=args.pageamount;
-
+        //应该省略的条数
+        var skipnumber = args.pageamount * args.page || 0;
+        //数目限制
+        var limit=args.pageamount || 0;
+        //排序
+        var sort = args.sort || {};
         console.log(skipnumber);
         console.log(limit);
     }else{
@@ -48,7 +51,7 @@ exports.find=function(collectionName,json,C,D){
         return;
     }
     _connectDB(function(err,db){
-        var cursor = db.collection(collectionName).find(json).skip(skipnumber).limit(limit);
+        var cursor = db.collection(collectionName).find(json).skip(skipnumber).limit(limit).sort(sort);
         cursor.each(function(err,doc){
             if(err){
                 callback(err,null);

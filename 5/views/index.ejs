@@ -10,14 +10,18 @@
         #chenggong,#shibai{
             display: none;
         }
+        .kaui{
+            padding: 5px 5px;
+            border-bottom: 1px solid #5a5a5a;
+        }
     </style>
+    <!--//模板引擎-->
     <script type="text/html" id="arttep">
         {{each res as value}}
-        <div class="list-group">
-            <a href="#" class="list-group-item active">
-                <h4 class="list-group-item-heading">{{value.xingming}}</h4>
-                <p class="list-group-item-text">{{value.liuyan}}</p>
-            </a>
+        <div class="kaui">
+                <p>【姓名】{{value.xingming}}</p>
+                <p >【留言】{{value.liuyan}}</p>
+                <p >【时间】{{value.shijian}}</p>
         </div>
             <!--<p>{{value.xingming}}</p>-->
             <!--<p>{{value.liuyan}}</p>-->
@@ -68,7 +72,7 @@
 <script type="text/javascript" src="js/template.js" ></script>
 <script src="js/bootstrap.min.js"></script>
 <script>
-
+//ajax请求数据显示在页面
         $.get("/du", function(e){
 //            var json = JSON.parse(result);
             console.log(e.result.length);
@@ -82,10 +86,11 @@
             var html = template('arttep',c);
             $("#tet").html(html);
         });
-
+//提交表单
     $("#tijiao").click(function(){
-        $("#chenggong").hide();
         $("#shibai").hide();
+        $("#chenggong").hide();
+console.log("llll");
         $.post("/tijiao",{
             "xingming":$("#xingming").val(),
             "liuyan":$("#liuyan").val()
@@ -94,9 +99,12 @@
                $("#shibai").fadeIn()
 
            }else if(result.result==1){
+
                $("#chenggong").fadeIn();
+               //提交成功 当前页面却无法显示s
            }
         });
+//        window.location = "/";
     });
 
 </script>
