@@ -1,6 +1,7 @@
 var express = require("express");
 var formidable = require("formidable");
 var app = express();
+var ObjectId = require('mongodb').ObjectID;
 var db = require("./model/db.js");
 //设置模板引擎
 app.set("views engine","ejs");
@@ -16,10 +17,10 @@ app.get("/",function(req,res,next) {
 });
 //读取所有留言
 app.get("/du",function(req,res,next){
-    // var pagesize = 4;
+    // var pagesize = 3;
     //可以接受一个参数
     var page = parseInt(req.query.page);
-    db.find("liuyanben",{},{"sort":{"shijian":-1},"pageamount":4,"page":page},function(err,result){
+    db.find("liuyanben",{},{"sort":{"shijian":-1},"pageamount":3,"page":page},function(err,result){
         res.json({"result":result});
     });
 });
@@ -42,10 +43,12 @@ app.post("/tijiao",function(req,res,next){
 
     });
 });
-//得到总数
-// app.get("/count",function(req,res){
-//     db.getAllCount("liuyanben",function(count){
-//         res.send(count.toString());
-//     });
-// })
+
+app.get("/shanchu",function(req,res,next){
+    var id = req.query.id;
+    db.deleteMany("liuyanben",{"_id":ObjectId(id)},function(err,result){
+        // res.send("删除成功");
+        res.redirect("/");
+    });
+})
 app.listen(3000);
