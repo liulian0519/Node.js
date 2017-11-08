@@ -7,8 +7,12 @@ app.set("views engine","ejs");
 
 //
 app.use(express.static("./public"));
-app.get("/",function(req,res,next){
-    res.render("index");
+app.get("/",function(req,res,next) {
+    db.getAllCount("liuyanben", function (count) {
+        res.render("index", {
+            "pageamount": Math.ceil(count / 4)
+        });
+    });
 });
 //读取所有留言
 app.get("/du",function(req,res,next){
@@ -38,4 +42,10 @@ app.post("/tijiao",function(req,res,next){
 
     });
 });
+//得到总数
+// app.get("/count",function(req,res){
+//     db.getAllCount("liuyanben",function(count){
+//         res.send(count.toString());
+//     });
+// })
 app.listen(3000);

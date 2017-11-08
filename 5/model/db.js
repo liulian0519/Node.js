@@ -94,3 +94,12 @@ exports.updateMany=function(collectionNmae,json1,json2,callback){
     })
 }
 //得到总数
+exports.getAllCount = function(collectionNmae,callback){
+    _connectDB(function(err,db){
+        db.collection(collectionNmae).count({}).then(function(count){
+            console.log(count);
+            callback(count);
+            db.close();
+        })
+    })
+}
