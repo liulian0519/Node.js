@@ -29,9 +29,10 @@
         },function(result){
             if(result == "1"){
                alert("登陆成功");
-            }else {
-                alert("登陆失败");
-//                console.log("hfit");
+            }else if(result == -2){
+                alert("没有这个人")
+            }else if(result == -1){
+                alert("密码错误");
             }
         })
     });
