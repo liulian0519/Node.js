@@ -5,3 +5,4 @@ npm install --save express
 npm install --save formidable
 npm install --save ejs
 npm install --save express-session
+npm install --save gm  /*Í¼Æ¬´¦Àí*/
