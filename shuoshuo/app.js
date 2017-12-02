@@ -7,7 +7,8 @@ app.set("view engine","ejs");
 app.use(express.static("./public"));
 //路由表
 app.get("/",router.showIndex);
-
+app.get("/regist",router.showRegist);
+app.post("/doregist",router.doregist);
 
 
 app.listen(3000);
