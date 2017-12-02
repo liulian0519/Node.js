@@ -1,9 +1,19 @@
 var formidable = require("formidable");
 var db = require("../models/db.js");
 var md5 = require("../models/md5");
+
+
+
+
 // /首页
 exports.showIndex = function(req,res,next){
-    res.render("index");
+
+    console.log(req.session.login);
+    res.render("index",{
+        "login" : req.session.login == "1" ? true : false ,
+         "username" : req.session.login == "1" ? req.session.username : ""
+
+    });
 }
 //注册页
 exports.showRegist= function(req,res,next){
@@ -18,6 +28,7 @@ exports.doregist = function(req,res,next){
     form.parse(req,function(err,fields,files){
         var username = fields.username;
         var password = fields.password;
+
         db.find("users",{"username":username},function (err,result) {
             if(err){
                 res.send("-3");
@@ -37,7 +48,11 @@ exports.doregist = function(req,res,next){
                     res.send("-3");
                     return;
                 }
-                res.send("1");
+                req.session.login = "1";
+                req.session.username = username;
+
+                res.send("1"); //注册成功 写入session
+
             })
         })
     })

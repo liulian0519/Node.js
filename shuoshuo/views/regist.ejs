@@ -19,6 +19,9 @@
         body{
             padding-top: 120px;
         }
+        #cuwukuang{
+            display: none;
+        }
     </style>
 
 </head>
@@ -41,11 +44,12 @@
                 <li ><a href="#">全部说说 <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">我的说说</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="#">注册</a></li>
-                <li><a href="#">登陆</a></li>
 
-            </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="#">注册</a></li>
+                    <li><a href="#">登陆</a></li>
+                </ul>
+
         </div><!--/.navbar-collapse -->
     </div>
 </nav>
@@ -73,6 +77,7 @@
             </div>
             <button type="button" id="zhuce" class="btn btn-default">注册</button>
         </form>
+        <div class="alert alert-warning" role="alert" id="cuwukuang">用户名被占用</div>
     </div>
 </div> <!-- /container -->
 
@@ -83,6 +88,10 @@
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+
+    $("input").focus(function () {
+        $("#cuwukuang").fadeOut();
+    })
     $("#zhuce").click(function () {
 
         $.post("/doregist",{
@@ -91,8 +100,12 @@
         },function (result) {
             if(result == "1"){
                 //注册成功
+                alert("注册成功");
+                window.location="/";
             }else if(result == "-1"){
                 //用户名被占用
+                $("#cuwukuang").fadeIn();
+                $("#cuwukuang").html("用户名被占用");
             }else if(result == "-3"){
                 //服务器错误
             }
