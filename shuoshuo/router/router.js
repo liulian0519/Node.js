@@ -8,13 +8,19 @@ exports.showIndex = function(req,res,next){
     console.log(req.session.login);
     res.render("index",{
         "login" : req.session.login == "1" ? true : false ,
-         "username" : req.session.login == "1" ? req.session.username : ""
+         "username" : req.session.login == "1" ? req.session.username : "",
+        "active" :"首页"
 
     });
 }
 //注册页
 exports.showRegist= function(req,res,next){
-    res.render("regist");
+    res.render("regist",{
+        "login" : req.session.login == "1" ? true : false ,
+        "username" : req.session.login == "1" ? req.session.username : "",
+        "active" : "注册"
+
+    });
 }
 //注册业务
 exports.doregist = function(req,res,next){
@@ -58,7 +64,12 @@ exports.doregist = function(req,res,next){
 
 //登录页
 exports.showLogin = function (req,res,next) {
-    res.render("login");
+    res.render("login",{
+        "login" : req.session.login == "1" ? true : false ,
+        "username" : req.session.login == "1" ? req.session.username : "",
+        "active" : "登陆"
+
+    });
 }
 //登录页面的执行业务
 exports.dologin = function (req,res,next) {
