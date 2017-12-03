@@ -180,6 +180,12 @@ exports.docut = function(req,res,next){
                 res.send("-1");
                 return;
             }
-            res.send("1");
+            //更改数据库中的avatar
+            db.updateMany("users",{"username":req.session.username},{
+                $set:{"avatar" : req.session.avatar}},function (err,result) {
+                res.send("1");
+            });
+
+
         })
 }
