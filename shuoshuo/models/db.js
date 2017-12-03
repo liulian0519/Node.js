@@ -15,6 +15,26 @@ function _connectDB(callback){
         db.close();
     });
 }
+init();
+function init(){
+    _connectDB(function (err,db) {
+        if(err){
+            console.log(err);
+            return;
+        }
+        db.collection('users').createIndex(
+            {"username":1},
+            null,
+            function(err,results){
+                if(err){
+                    console.log(err);
+                    return;
+                }
+                console.log("索引建立成功");
+            }
+        );
+    });
+}
 //插入数据
 exports.insertOne=function(collectionName,json,callback){
     _connectDB(function(err,db){
