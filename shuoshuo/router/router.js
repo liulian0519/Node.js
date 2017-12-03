@@ -9,26 +9,30 @@ exports.showIndex = function(req,res,next){
 
     //console.log(req.session.login);
     //查找头像
-    if(req.session.login == "1"){
-        //已经登陆 查找头像
-        db.find("users",{username:req.session.username},function(err,result) {
-            var avatar = result[0].avatar || "moren.jpg";
+    if(req.session.login == "1") {
+        //如果登陆
+        var username = req.session.username;
+        var login = true;
+    }else {
+        //没有登陆
+        var username = "";
+        var login = false;
+    }
+
+        db.find("users",{username:username},function(err,result) {
+            if(result.length == 0){
+                var avatar ="moren.jpg";
+            }else{
+                var avatar = result[0].avatar
+            }
             res.render("index", {
-                "login": req.session.login == "1" ? true : false,
-                "username": req.session.login == "1" ? req.session.username : "",
+                "login": login,
+                "username": username,
                 "active": "首页",
                 "avatar": avatar
 
             });
         });
-    }else{
-        res.render("index",{
-            "login" : req.session.login == "1" ? true : false ,
-            "username" : req.session.login == "1" ? req.session.username : "",
-            "active" :"首页",
-            "avatar" : "moren.jpg"
-        });
-    }
 
 }
 //注册页
