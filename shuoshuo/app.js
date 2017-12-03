@@ -12,11 +12,16 @@ app.use(session({
 app.set("view engine","ejs");
 //静态页面
 app.use(express.static("./public"));
+app.use("/avatar",express.static("./avatar"));
 //路由表
 app.get("/",router.showIndex);
 app.get("/regist",router.showRegist);
 app.post("/doregist",router.doregist);
 app.get("/login",router.showLogin);
 app.post("/dologin",router.dologin);
+app.get("/setavatar",router.showSetavatar);
+app.post("/dosetavatar",router.dosetavatar);
+app.get("/cut",router.showCut);
+app.get("/docut",router.docut)
 
 app.listen(3000);

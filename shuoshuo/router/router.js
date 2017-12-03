@@ -1,17 +1,35 @@
 var formidable = require("formidable");
 var db = require("../models/db.js");
 var md5 = require("../models/md5");
-
+var path = require("path");
+var fs = require("fs");
+var gm = require("gm");
 // /首页
 exports.showIndex = function(req,res,next){
 
-    console.log(req.session.login);
-    res.render("index",{
-        "login" : req.session.login == "1" ? true : false ,
-         "username" : req.session.login == "1" ? req.session.username : "",
-        "active" :"首页"
+    //console.log(req.session.login);
+    //查找头像
+    if(req.session.login == "1"){
+        //已经登陆 查找头像
+        db.find("users",{username:req.session.username},function(err,result) {
+            var avatar = result[0].avatar || "moren.jpg";
+            res.render("index", {
+                "login": req.session.login == "1" ? true : false,
+                "username": req.session.login == "1" ? req.session.username : "",
+                "active": "首页",
+                "avatar": avatar
 
-    });
+            });
+        });
+    }else{
+        res.render("index",{
+            "login" : req.session.login == "1" ? true : false ,
+            "username" : req.session.login == "1" ? req.session.username : "",
+            "active" :"首页",
+            "avatar" : "moren.jpg"
+        });
+    }
+
 }
 //注册页
 exports.showRegist= function(req,res,next){
@@ -46,6 +64,7 @@ exports.doregist = function(req,res,next){
             db.insertOne("users",{
                 "username":username,
                 "password":password,
+                "avatar" : "moren.jpg"
             },function(err,result){
                 if(err){
                     res.send("-3");
@@ -105,4 +124,62 @@ exports.dologin = function (req,res,next) {
 
        })
    });
+}
+//设置头像页面 必须保持是登陆状态
+exports.showSetavatar = function (req,res,next) {
+    // if(req.session.login != "1" ){
+    //     res.send("请登录后再访问");
+    //     return;
+    // }
+    res.render("setavatar",{
+        "login" :  true ,
+        "username" : req.session.username || "小花花",
+        "active" : "修改头像"
+
+    });
+}
+//设置头像
+exports.dosetavatar = function(req,res,next){
+   var form = new formidable.IncomingForm();
+   form.uploadDir = path.normalize(__dirname + "/../avatar");
+   form.parse(req,function(err,fields,files){
+       var oldpath = files.touxiang.path;
+       var newpath = path.normalize(__dirname + "/../avatar") + "/" + req.session.username + ".jpg";
+       fs.rename(oldpath,newpath,function (err) {
+           if(err){
+               res.send("失败");
+               return;
+           }
+           req.session.avatar = req.session.username + ".jpg";
+           //跳转到切的页面
+            res.redirect("/cut");
+       })
+   })
+}
+exports.showCut = function (req,res) {
+    res.render("cut",{
+        avatar : req.session.avatar
+    });
+}
+//执行切图
+exports.docut = function(req,res,next){
+    //这个页面接收几个GET请求参数
+    //w、h、x、y
+    var filename = req.session.avatar;
+    var w = req.query.w;
+    var h = req.query.h;
+    var x = req.query.x;
+    var y = req.query.y;
+
+    gm("./avatar/" + filename)
+        .crop(w,h,x,y)
+        .resize(100,100,"!")
+        .write("./avatar/" + filename,function(err){
+            if(err){
+                console.log(err)
+                res.send("-1");
+                return;
+            }
+            res.send("1");
+        })
 }
