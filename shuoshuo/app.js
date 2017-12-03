@@ -16,6 +16,7 @@ app.use(express.static("./public"));
 app.get("/",router.showIndex);
 app.get("/regist",router.showRegist);
 app.post("/doregist",router.doregist);
-
+app.get("/login",router.showLogin);
+app.post("/dologin",router.dologin);
 
 app.listen(3000);
