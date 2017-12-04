@@ -231,3 +231,10 @@ exports.getuserinfo= function (req,res,next) {
         res.json(obj);
     });
 }
+
+//说说总数
+exports.getshuoshuoamount = function(req,res,next){
+    db.getAllCount("posts",function (count) {
+        res.send(count.toString());
+    })
+}

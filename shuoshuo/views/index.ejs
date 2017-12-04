@@ -4,29 +4,27 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
-
+    <script type="text/javascript" src="/js/underscore-noflect.js"></script>
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
     <title>班级说说</title>
-
-    <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="/css/jumbotron.css" rel="stylesheet">
     <style type="text/css">
         .grid{
             height:200px;
         }
+        #quanbushuoshuo{
+            height:200px;
+        }
     </style>
-
 </head>
-
 <body>
 
 <% include header.ejs %>
-<!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
     <!--//没有登陆-->
     <%if(!login){%>
@@ -77,14 +75,16 @@
 </div>
 
 <div class="container">
-    <!-- Example row of columns -->
+    <!--//分页-->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <!--分页的0123456-->
+        </ul>
+    </nav>
     <div class="row" id="quanbushuoshuo">
-
+        <!--模板填充在这-->
     </div>
 </div> <!-- /container -->
-
-
-
 
 <!--//模板-->
 <script type="text/template" id="moban">
@@ -95,66 +95,59 @@
         <p><a class="btn btn-default" href="#" role="button">查看详情</a></p>
     </div>
 </script>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script type="text/javascript" src="/js/underscore-noflect.js"></script>
-<script src="/js/jquery-3.2.1.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-
+<!--================================================== &ndash;&gt;-->
+<!--分页-->
+<script type="text/javascript">
+    $.get("/getshuoshuoamount",function (result) {
+        var amount = parseInt(result);
+        var  pageamount = Math.ceil(amount/6);
+        for(var i =0 ;i<pageamount;i++){
+            $(".pagination").append("<li><a href='#'>" + i + "</a></li>");
+        }
+        $(".pagination li:first").addClass("active");
+        $(".pagination li").click(function(){
+            var page = $(this).index();
+            getPage(page);
+            $(this).addClass("active").siblings().removeClass("active")
+        });
+    })
+</script>
 <script type="text/javascript">
     var $quanbushuoshuo = $("#quanbushuoshuo");
     //得到模板
     var compiled = _.template($("#moban").html());
-    //ajax读取文章列表
-    $.ajax({
-        "url":"/getAllshuoshuo?page=0",
-        "type":"get",
-        //迭代器
-        "success":function(result){
-            iterator(0);
-            function iterator(i){
-                if(i==result.length){
-                    //在这里书写请求完毕的事情
-                    return;
-                }
-                $.get("/getuserinfo?username=" + result[i].usernmae,function (result2) {
-                    result[i].avatar = result2.avatar;
-                    //组装模板
-                    var htmlstring = compiled(result[i]);
-                    $("#quanbushuoshuo").append($(htmlstring));
-                    iterator(i+1);
 
-                })
+    //ajax读取文章列表
+    getPage(0);
+    function getPage(page) {
+        $("#quanbushuoshuo").html("");
+        $.ajax({
+            "url":"/getAllshuoshuo?page=" + page,
+            "type":"get",
+            //迭代器
+            "success":function(result){
+                iterator(0);
+                function iterator(i){
+                    if(i==result.length){
+                        //在这里书写请求完毕的事情
+                        return;
+                    }
+                    $.get("/getuserinfo?username=" + result[i].usernmae,function (result2) {
+                        result[i].avatar = result2.avatar;
+                        //组装模板
+                        var htmlstring = compiled(result[i]);
+                        $("#quanbushuoshuo").append($(htmlstring));
+                        iterator(i+1);
+                    })
+                }
             }
-        }
-        //这个方法也可以   但是chrome会有警告
-//        "success":function(result){
-//            for(var i=0;i<result.length;i++){
-//                $.ajax({
-//                    "url":"/getuserinfo?username=" + result[i].usernmae,
-//                    "type":"get",
-//                    "async":false,  //必须同步
-//                    "success":function (result2) {
-//                        //修改字典 给字典增加一项
-//                        result[i].avatar = result2.avatar;
-//                    }
-//                })
-//            }
-//        }
-    })
-//    $.get("/getAllshuoshuo?page=0",function(result){
-//        console.log(result);
-//        for(var i = 0;i<result.r.length;i++){
-//            var htmlstring = compiled(result.r[i]);
-//            $quanbushuoshuo.append($(htmlstring));
-//        }
-//    });
+        });
+    };
     //错误框
     $("input").focus(function () {
         $("#cuwukuang").fadeOut();
     });
+    //登陆业务
     $("#denglu").click(function () {
         $.post("/dologin",{
             "username" : $("#username").val(),
@@ -175,7 +168,7 @@
             }
         })
     });
-    //点击发表按钮的
+    //点击发表按钮的业务
     $("#fabiao").click(function () {
         $.post("/post",{
            "content":$("#content").val()
