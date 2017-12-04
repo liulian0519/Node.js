@@ -18,25 +18,19 @@ exports.showIndex = function(req,res,next){
         var username = "";
         var login = false;
     }
-        db.find("users",{username:username},function(err,result) {
-            if(result.length == 0){
-                var avatar ="moren.jpg";
-            }else{
-                var avatar = result[0].avatar
-            }
-            db.find("posts",{},{"sort":{"datetime":-1}},function(err,result2){
-                res.render("index", {
-                    "login": login,
-                    "username": username,
-                    "active": "首页",
-                    "avatar": avatar,
-                    "shuoshuo":result2
-
-                });
-            });
-
+    db.find("users",{username:username},function(err,result) {
+        if(result.length == 0){
+            var avatar ="moren.jpg";
+        }else{
+            var avatar = result[0].avatar
+        }
+        res.render("index", {
+            "login": login,
+            "username": username,
+            "active": "首页",
+            "avatar": avatar, //登陆人的头像
         });
-
+    });
 }
 //注册页
 exports.showRegist= function(req,res,next){
@@ -216,4 +210,18 @@ exports.doPost = function(req,res,next){
             res.send("1");
         })
     })
+}
+//列出说说
+exports.getAllshuoshuo= function (req,res,next) {
+    var page = req.query.page;
+    db.find("posts",{},{"pageamount":6,"page":page,"sort":{"datetime":-1}},function (err,result) {
+        res.json({"r":result});
+    });
+}
+//列出某个用户信息
+exports.getuserinfo= function (req,res,next) {
+    var username = req.query.username;
+    db.find("users",{"username":username},function (err,result) {
+        res.json({"r":result});
+    });
 }

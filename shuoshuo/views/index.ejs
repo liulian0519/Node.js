@@ -73,24 +73,45 @@
 
 <div class="container">
     <!-- Example row of columns -->
-    <div class="row">
-        <% for(var i = 0; i < shuoshuo.length; i++){%>
-            <div class="col-md-4">
-                <h2><img src="/avatar/<%=shuoshuo[i].usernmae%>.jpg" alt="" style="width: 40px; height: 40px; border-radius: 50px"/><%=shuoshuo[i].usernmae%>说：</h2>
-                <p><%=shuoshuo[i].content%></p>
-                <p><a class="btn btn-default" href="#" role="button">查看详情</a></p>
-            </div>
-        <%}%>
+    <div class="row" id="quanbushuoshuo">
+
     </div>
 </div> <!-- /container -->
 
 
+
+<!--//模板-->
+<script type="text/template" id="moban">
+    <div class="col-md-4">
+        <h2>{{=usernmae}}说：</h2>
+        <p>{{=content}}</p>
+        <p>{{=datetime}}</p>
+        <p><a class="btn btn-default" href="#" role="button">查看详情</a></p>
+    </div>
+</script>
+
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="/js/underscore-noflect.js"></script>
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+
 <script type="text/javascript">
+    var $quanbushuoshuo = $("#quanbushuoshuo");
+    //得到模板
+    var compiled = _.template($("#moban").html());
+
+    //ajax读取文章列表
+    $.get("/getAllshuoshuo?page=0",function(result){
+        console.log(result);
+        for(var i = 0;i<result.r.length;i++){
+            var htmlstring = compiled(result.r[i]);
+//            console.log(htmlstring);
+            $quanbushuoshuo.append($(htmlstring));
+        }
+    });
+    //错误框
     $("input").focus(function () {
         $("#cuwukuang").fadeOut();
     });
@@ -125,7 +146,7 @@
                alert("发表失败")
             }
         })
-    })
+    });
 </script>
 </body>
 </html>
