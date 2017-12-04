@@ -84,7 +84,6 @@ exports.doregist = function(req,res,next){
     })
 
 }
-
 //登录页
 exports.showLogin = function (req,res,next) {
     res.render("login",{
@@ -131,10 +130,10 @@ exports.dologin = function (req,res,next) {
 }
 //设置头像页面 必须保持是登陆状态
 exports.showSetavatar = function (req,res,next) {
-    // if(req.session.login != "1" ){
-    //     res.send("请登录后再访问");
-    //     return;
-    // }
+    if(req.session.login != "1" ){
+        res.send("请登录后再访问");
+        return;
+    }
     res.render("setavatar",{
         "login" :  true ,
         "username" : req.session.username || "小花花",
@@ -192,4 +191,26 @@ exports.docut = function(req,res,next){
 
 
         })
+}
+exports.doPost = function(req,res,next){
+    if(req.session.login != "1" ){
+        res.send("请登录后再访问");
+        return;
+    }
+    var username= req.session.username
+    var form = new formidable.IncomingForm();
+    form.parse(req,function (err,fields,files) {
+        var content = fields.content;
+        db.insertOne("posts",{
+            "usernmae": username,
+            "datetime":new Date(),
+            "content":content
+        },function(err,result){
+            if(err){
+                res.send("-3") //服务器错误
+                return;
+            }
+            res.send("1");
+        })
+    })
 }

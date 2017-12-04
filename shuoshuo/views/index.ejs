@@ -23,14 +23,52 @@
 <% include header.ejs %>
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
+    <!--//没有登陆-->
+    <%if(!login){%>
     <div class="container">
-        <h1>
-           <a href="/setavatar"> <img src="/avatar/<%=avatar%>" style="width: 100px; height: 100px;"/></a>
-            Hello, world!
-        </h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+        <div class="row">
+            <div class="col-lg-6">
+                <h1>
+                    欢迎！
+                </h1>
+                <p>这里是我们交流的平台，欢迎大家注册呦</p>
+                <p><a class="btn btn-primary btn-lg" href="/regist" role="button">注册</a></p>
+            </div>
+            <div class="col-lg-6">
+                <p>已有账号登录</p>
+                <form>
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" class="form-control" id="username" placeholder="用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" placeholder="密码">
+                    </div>
+                    <button type="button" id="denglu" class="btn btn-success">登陆</button>
+                </form>
+                <div class="alert alert-warning" role="alert" id="cuwukuang" style="display: none;">
+                </div>
+            </div>
+        </div>
+
     </div>
+    <%}else{%>
+    <!--登陆之后显示发言框-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-1">
+                <a href="/setavatar"><img src="/avatar/<%= avatar %>" alt="" style="width: 100px; height: 100px;"/></a>
+            </div>
+            <div class="col-lg-6 col-lg-offset-1">
+                <p><%=username%></p>
+                <textarea name="content" id="content" cols="80" rows="4"></textarea>
+                <button type="button" id="fabiao" class="btn btn-success">发表留言</button>
+            </div>
+
+        </div>
+    </div>
+    <%}%>
 </div>
 
 <div class="container">
@@ -52,7 +90,6 @@
             <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
     </div>
-
     <hr>
 
     <footer>
@@ -66,6 +103,42 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $("input").focus(function () {
+        $("#cuwukuang").fadeOut();
+    });
+    $("#denglu").click(function () {
+        $.post("/dologin",{
+            "username" : $("#username").val(),
+            "password" : $("#password").val()
+        },function (result) {
+            if(result == "1"){
+                //注册成功
 
+                window.location="/";
+            }else if(result == "-1"){
+                //用户名被占用
+                $("#cuwukuang").fadeIn();
+                $("#cuwukuang").html("用户名不存在");
+            }else if(result == "-2"){
+                //服务器错误
+                $("#cuwukuang").fadeIn();
+                $("#cuwukuang").html("密码错误");
+            }
+        })
+    });
+    //点击发表按钮的
+    $("#fabiao").click(function () {
+        $.post("/post",{
+           "content":$("#content").val()
+        },function (result) {
+            if(result == "1"){
+                alert("发表成功");
+            }else {
+               alert("发表失败")
+            }
+        })
+    })
+</script>
 </body>
 </html>

@@ -22,6 +22,7 @@ app.post("/dologin",router.dologin);
 app.get("/setavatar",router.showSetavatar);
 app.post("/dosetavatar",router.dosetavatar);
 app.get("/cut",router.showCut);
-app.get("/docut",router.docut)
+app.get("/docut",router.docut);
+app.post("/post",router.doPost);
 
 app.listen(3000);
