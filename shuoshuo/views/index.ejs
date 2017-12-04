@@ -15,6 +15,11 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <link href="/css/jumbotron.css" rel="stylesheet">
+    <style type="text/css">
+        .grid{
+            height:200px;
+        }
+    </style>
 
 </head>
 
@@ -58,7 +63,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-1">
-                <a href="/setavatar"><img src="/avatar/<%= avatar %>" alt="" style="width: 100px; height: 100px;"/></a>
+                <a href="/setavatar"><img src="/avatar/<%= avatar %>" alt="" style="width: 100px; height: 100px; border-radius: 50px"/></a>
             </div>
             <div class="col-lg-6 col-lg-offset-1">
                 <p><%=username%></p>
@@ -80,10 +85,11 @@
 
 
 
+
 <!--//模板-->
 <script type="text/template" id="moban">
-    <div class="col-md-4">
-        <h2>{{=usernmae}}说：</h2>
+    <div class="col-md-4 grid">
+        <h2><img src="/avatar/{{=avatar}}" alt="" style="margin-right:10px;width: 40px; border-radius:50%"/>{{=usernmae}}</h2>
         <p>{{=content}}</p>
         <p>{{=datetime}}</p>
         <p><a class="btn btn-default" href="#" role="button">查看详情</a></p>
@@ -101,16 +107,50 @@
     var $quanbushuoshuo = $("#quanbushuoshuo");
     //得到模板
     var compiled = _.template($("#moban").html());
-
     //ajax读取文章列表
-    $.get("/getAllshuoshuo?page=0",function(result){
-        console.log(result);
-        for(var i = 0;i<result.r.length;i++){
-            var htmlstring = compiled(result.r[i]);
-//            console.log(htmlstring);
-            $quanbushuoshuo.append($(htmlstring));
+    $.ajax({
+        "url":"/getAllshuoshuo?page=0",
+        "type":"get",
+        //迭代器
+        "success":function(result){
+            iterator(0);
+            function iterator(i){
+                if(i==result.length){
+                    //在这里书写请求完毕的事情
+                    return;
+                }
+                $.get("/getuserinfo?username=" + result[i].usernmae,function (result2) {
+                    result[i].avatar = result2.avatar;
+                    //组装模板
+                    var htmlstring = compiled(result[i]);
+                    $("#quanbushuoshuo").append($(htmlstring));
+                    iterator(i+1);
+
+                })
+            }
         }
-    });
+        //这个方法也可以   但是chrome会有警告
+//        "success":function(result){
+//            for(var i=0;i<result.length;i++){
+//                $.ajax({
+//                    "url":"/getuserinfo?username=" + result[i].usernmae,
+//                    "type":"get",
+//                    "async":false,  //必须同步
+//                    "success":function (result2) {
+//                        //修改字典 给字典增加一项
+//                        result[i].avatar = result2.avatar;
+//                    }
+//                })
+//            }
+//        }
+    })
+//    $.get("/getAllshuoshuo?page=0",function(result){
+//        console.log(result);
+//        for(var i = 0;i<result.r.length;i++){
+//            var htmlstring = compiled(result.r[i]);
+//            $quanbushuoshuo.append($(htmlstring));
+//        }
+//    });
     //错误框
     $("input").focus(function () {
         $("#cuwukuang").fadeOut();

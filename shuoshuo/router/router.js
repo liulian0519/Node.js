@@ -215,13 +215,19 @@ exports.doPost = function(req,res,next){
 exports.getAllshuoshuo= function (req,res,next) {
     var page = req.query.page;
     db.find("posts",{},{"pageamount":6,"page":page,"sort":{"datetime":-1}},function (err,result) {
-        res.json({"r":result});
+        res.json(result);
     });
 }
 //列出某个用户信息
 exports.getuserinfo= function (req,res,next) {
     var username = req.query.username;
     db.find("users",{"username":username},function (err,result) {
-        res.json({"r":result});
+        // console.log(result)
+        var obj = {
+            "username":result[0].username,
+            "avatar":result[0].avatar,
+            "_id":result[0]._id
+        };
+        res.json(obj);
     });
 }
