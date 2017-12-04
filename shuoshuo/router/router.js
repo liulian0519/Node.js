@@ -18,20 +18,23 @@ exports.showIndex = function(req,res,next){
         var username = "";
         var login = false;
     }
-
         db.find("users",{username:username},function(err,result) {
             if(result.length == 0){
                 var avatar ="moren.jpg";
             }else{
                 var avatar = result[0].avatar
             }
-            res.render("index", {
-                "login": login,
-                "username": username,
-                "active": "首页",
-                "avatar": avatar
+            db.find("posts",{},{"sort":{"datetime":-1}},function(err,result2){
+                res.render("index", {
+                    "login": login,
+                    "username": username,
+                    "active": "首页",
+                    "avatar": avatar,
+                    "shuoshuo":result2
 
+                });
             });
+
         });
 
 }
