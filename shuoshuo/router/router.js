@@ -257,4 +257,14 @@ exports.showUser = function (req,res,next) {
     });
 
 }
-//成员列表
+//显示成员列表
+exports.showUserlist = function(req,res,next){
+    db.find("users",{},function(err,result){
+        res.render("userlist",{
+            "login":req.session.login == "1" ? true : false,
+            "username":req.session.login == "1" ? req.session.username : "",
+            "active" : "成员列表",
+            "suoyouchengyuan":result
+        });
+    })
+}
