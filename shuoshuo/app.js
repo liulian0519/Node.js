@@ -27,7 +27,7 @@ app.post("/post",router.doPost);                //发表说说
 app.get("/getAllshuoshuo",router.getAllshuoshuo);//列出所有说说
 app.get("/getuserinfo",router.getuserinfo);      //得到用户信息
 app.get("/getshuoshuoamount",router.getshuoshuoamount); //得到说说总数
-
+app.get("/user/:user",router.showUser);             //显示用户所有说说即个人主页
 
 
 app.listen(3000);
