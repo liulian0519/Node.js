@@ -27,8 +27,10 @@
     <div class="row col-lg-6">
         <%for(var i = 0; i < suoyouchengyuan.length; i ++){%>
         <div class="one">
-            <p><%=suoyouchengyuan[i].username%></p>
-            <p> <img src="/avatar/<%=suoyouchengyuan[i].avatar%>" style="width: 100px; height: 100px; border-radius: 50px; /></p>
+            <a target="_blank" href="/user/<%=suoyouchengyuan[i].username%>" style="text-decoration: none">
+                <p><%=suoyouchengyuan[i].username%></p>
+                <p> <img src="/avatar/<%=suoyouchengyuan[i].avatar%>" style="width: 100px; height: 100px; border-radius: 50px;"/></p>
+            </a>
 
         </div>
         <%}%>
